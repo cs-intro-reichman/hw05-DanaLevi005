@@ -11,9 +11,9 @@ public class GameOfLife {
 		String fileName = args[0];
 		//// Uncomment the test that you want to execute, and re-compile.
 		//// (Run one test at a time).
-		// test1(fileName);
-		test2(fileName);
-		//// test3(fileName, 3);
+		//// test1(fileName);
+		// test2(fileName);
+		test3(fileName, 3);
 		//// play(fileName);
 	}
 	
@@ -27,8 +27,8 @@ public class GameOfLife {
 	// the count and cellValue functions.
 	private static void test2(String fileName) {
 		int[][] board = read(fileName);
-		System.out.println(count(board,3, 4));
-		System.out.println(cellValue(board, 3, 4));
+		// System.out.println(count(board,4, 5));
+		System.out.println(cellValue(board, 2, 3));
 
 				
 	}
@@ -94,8 +94,14 @@ public class GameOfLife {
 	// Uses the cellValue(board,i,j) function to compute the value of each 
 	// cell in the new board. Returns the new board.
 	public static int[][] evolve(int[][] board) {
-		//// Replace the following statement with your code.
-		return null;
+		int [][] newBoard = new int [board.length][board[1].length];
+
+		for (int i = 1; i < board.length - 1; i++) {
+			for (int j = 1; j < board[i].length - 1; j++) {
+				newBoard[i][j] = cellValue(board, i, j);
+			}
+		}
+		return newBoard;
 	}
 
 	// Returns the value that cell (i,j) should have in the next generation.
@@ -108,19 +114,23 @@ public class GameOfLife {
 	// Assumes that j is at least 1 and at most the number of columns in the board - 1. 
 	// Uses the count(board,i,j) function to count the number of alive neighbors.
 	public static int cellValue(int[][] board, int i, int j) {
-		int cellValue = 0;
-		if (board[i][j] == 1 && (count(board, i, j) < 2 || count(board, i, j) > 3)) {
-			cellValue = 0;
-		} else if (board[i][j] == 1 && (count(board, i, j) == 2 || count(board, i, j) == 3)){
-			cellValue = 1;
+		int cellValue = board[i][j];
+		int countLive = count(board, i, j);
 
-		} else if (board[i][j] == 0 && cellValue(board, i, j) == 3){
+		if ((cellValue == 1) && ((countLive < 2) || (countLive > 3))) {
+			cellValue = 0;
+			return cellValue;
+		} else if ((cellValue == 1) && ((countLive == 2) || (countLive == 3))) {
 			cellValue = 1;
+			return cellValue;
+		} else if ((cellValue == 0) && (countLive == 3)) {
+			cellValue = 1;
+			return cellValue;
 		} else {
-			cellValue = board[i][j];
+			return cellValue;
 		}
-	
-		return cellValue;
+
+
 	}
 	
 	// Counts and returns the number of living neighbors of the given cell
@@ -132,13 +142,16 @@ public class GameOfLife {
 		int col = j;
 		int countLive = 0;
 
-		for ( int k = row -1; k < 3; k++){
-			for (int l = col - 1; l < 3; l++) {
-				if (board[k][l] == 1 && k != row && l != col){
+		for ( int k = row -1; k < row + 2; k++) {
+			for (int l = col - 1; l < col +2; l++) {
+				if (board[k][l] == 1){
 					countLive++;
 				}
 			}	
+		}
 
+		if (board[i][j] == 1) {
+			countLive --;
 		}
 		
 		return countLive; 
